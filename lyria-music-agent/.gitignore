@@ -1,0 +1,11 @@
+# .gitignore — CRÍTICO para seguridad
+.env
+*.wav
+*.mp4
+*.mp3
+youtube_token.json
+output/
+data/
+__pycache__/
+venv/
+.DS_Store

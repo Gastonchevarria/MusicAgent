@@ -1,0 +1,30 @@
+anthropic>=0.25.0
+google-genai>=1.0.0
+replicate==0.25.1
+requests==2.31.0
+yt-dlp==2024.12.23
+pytrends==4.9.2
+
+# Google APIs
+google-auth-oauthlib==1.2.0
+google-api-python-client==2.120.0
+
+# Automation
+playwright==1.42.0
+
+# Notifications
+python-telegram-bot==21.0
+httpx==0.27.0
+
+# Media
+Pillow==10.2.0
+
+# Utils
+schedule==1.2.1
+python-dotenv==1.0.0
+tenacity==8.2.3          
+structlog==24.1.0        
+
+# Observability
+opentelemetry-api==1.24.0
+opentelemetry-sdk==1.24.0

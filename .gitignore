@@ -1,0 +1,48 @@
+# ===== SECRETS & CREDENTIALS =====
+.env
+.env.*
+*.env
+client_secrets.json
+youtube_token.json
+**/client_secrets.json
+**/youtube_token.json
+*cookies*.json
+*token*.json
+
+# ===== PYTHON =====
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# ===== MEDIA / BINARY FILES =====
+Arcadia Music/
+vpsexport/
+*.mp3
+*.mp4
+*.wav
+*.flac
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.tar.gz
+
+# ===== OUTPUT & TEMP =====
+output/
+output_test_*
+dummy.mp3
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+._*
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
