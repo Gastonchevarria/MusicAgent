@@ -13,13 +13,27 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 def get_authenticated_service():
     """
     Obtiene el servicio autenticado de YouTube.
-    Lee o genera `youtube_token.json`.
+    Lee desde la variable de entorno YOUTUBE_TOKEN_JSON por seguridad,
+    y usa youtube_token.json solo como fallback local de desarrollo.
     """
+    import json
     creds = None
+    
+    # 1. Intentar cargar desde variable de entorno (SEGURO)
+    env_token = os.getenv("YOUTUBE_TOKEN_JSON")
+    if env_token:
+        try:
+            token_info = json.loads(env_token)
+            creds = Credentials.from_authorized_user_info(token_info, SCOPES)
+        except Exception as e:
+            log.error("env_token_invalid", error=str(e))
+
+    # 2. Archivos físicos de fallback local
     token_file = "youtube_token.json"
     client_secrets_file = os.getenv("YOUTUBE_CLIENT_SECRETS_FILE", "client_secrets.json")
 
-    if os.path.exists(token_file):
+    if not creds and os.path.exists(token_file):
+        log.warning("security_risk", msg="Usando youtube_token.json físico. Mueve su contenido a .env (YOUTUBE_TOKEN_JSON)")
         creds = Credentials.from_authorized_user_file(token_file, SCOPES)
         
     if not creds or not creds.valid:
