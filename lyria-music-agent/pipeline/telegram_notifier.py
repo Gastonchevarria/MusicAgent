@@ -1,5 +1,6 @@
 import os
 import re
+import html
 import telegram
 import structlog
 
@@ -7,56 +8,51 @@ log = structlog.get_logger()
 
 
 def sanitize_html(text) -> str:
-    """Strip HTML tags from error strings. YouTube API errors contain <a> tags."""
     if not text:
         return "N/A"
-    text = str(text)
-    return re.sub(r"<[^>]+>", "", text)
+    return str(text)
 
 
 def _clean(text: str) -> str:
-    """Sanitize HTML then escape Telegram Markdown special characters."""
-    text = sanitize_html(text)
-    for char in ["_", "*", "[", "]", "`"]:
-        text = text.replace(char, f"\\{char}")
-    return text
+    """Escape specific characters for HTML."""
+    return html.escape(str(text))
 
 
 def _build_message(track_result: dict) -> str:
-    """Build daily notification for a single track."""
-    msg = "🎵 *Arcadia Soundscapes - Daily Track*\n\n"
+    """Build daily notification for a single track using HTML."""
+    msg = "🎵 <b>Arcadia Soundscapes - Daily Track</b>\n\n"
 
-    msg += f"*Nicho:* {_clean(track_result.get('niche', 'N/A'))}\n"
-    msg += f"*Titulo:* {_clean(track_result.get('title', 'N/A'))}\n"
-    msg += f"*Provider:* {_clean(track_result.get('provider', 'N/A'))}\n"
-    msg += f"*BPM:* {track_result.get('bpm', 'N/A')}\n\n"
+    msg += f"<b>Nicho:</b> {_clean(track_result.get('niche', 'N/A'))}\n"
+    msg += f"<b>Titulo:</b> {_clean(track_result.get('title', 'N/A'))}\n"
+    msg += f"<b>Provider:</b> {_clean(track_result.get('provider', 'N/A'))}\n"
+    msg += f"<b>BPM:</b> {track_result.get('bpm', 'N/A')}\n\n"
 
     yt_url = track_result.get("yt_url", "N/A")
     if not isinstance(yt_url, str) or yt_url.startswith("ERROR"):
-        msg += f"▶️ *YouTube:* {_clean(str(yt_url))}\n"
+        msg += f"▶️ <b>YouTube:</b> {_clean(str(yt_url))}\n"
     else:
-        msg += f"▶️ *YouTube:* {yt_url}\n"
+        msg += f"▶️ <b>YouTube:</b> <a href=\"{yt_url}\">{yt_url}</a>\n"
 
     yt_short = track_result.get("yt_short_url", "N/A")
     if not isinstance(yt_short, str) or yt_short.startswith("ERROR"):
-        msg += f"📱 *Short:* {_clean(str(yt_short))}\n"
+        msg += f"📱 <b>Short:</b> {_clean(str(yt_short))}\n"
     else:
-        msg += f"📱 *Short:* {yt_short}\n"
+        msg += f"📱 <b>Short:</b> <a href=\"{yt_short}\">{yt_short}</a>\n"
 
-    msg += f"💰 *Pond5:* {'OK' if track_result.get('pond5') else 'Fallo'}\n"
+    msg += f"💰 <b>Pond5:</b> {'OK' if track_result.get('pond5') else 'Fallo'}\n"
 
     return msg
 
 
 def _build_batch_message(track_results: list) -> str:
     """Build notification for multiple tracks (used for pending retries)."""
-    msg = "🎵 *Arcadia Soundscapes - Reporte Diario*\n\n"
-    msg += f"📦 *Tracks publicados:* {len(track_results)}\n\n"
+    msg = "🎵 <b>Arcadia Soundscapes - Reporte Diario</b>\n\n"
+    msg += f"📦 <b>Tracks publicados:</b> {len(track_results)}\n\n"
     for i, track in enumerate(track_results, 1):
-        msg += f"*{i}.* {_clean(track.get('title', 'N/A'))}\n"
+        msg += f"<b>{i}.</b> {_clean(track.get('title', 'N/A'))}\n"
         yt_url = track.get("yt_url", "N/A")
         if isinstance(yt_url, str) and not yt_url.startswith("ERROR"):
-            msg += f"   ▶️ {yt_url}\n"
+            msg += f"   ▶️ <a href=\"{yt_url}\">{yt_url}</a>\n"
         msg += "\n"
     return msg
 
@@ -83,7 +79,7 @@ async def notify(track_results):
             await bot.send_message(
                 chat_id=chat_id,
                 text=message,
-                parse_mode="Markdown",
+                parse_mode="HTML",
                 disable_web_page_preview=True,
             )
         log.info("telegram_notification_sent")
@@ -103,9 +99,9 @@ async def notify_error(error_type: str, details: str):
 
         details_clean = _clean(details)
         message = (
-            f"⚠️ *Arcadia Soundscapes - Error*\n\n"
-            f"*Tipo:* {_clean(error_type)}\n"
-            f"*Detalle:* {details_clean[:500]}\n"
+            f"⚠️ <b>Arcadia Soundscapes - Error</b>\n\n"
+            f"<b>Tipo:</b> {_clean(error_type)}\n"
+            f"<b>Detalle:</b> {details_clean[:500]}\n"
         )
 
         bot = telegram.Bot(token=token)
@@ -113,7 +109,7 @@ async def notify_error(error_type: str, details: str):
             await bot.send_message(
                 chat_id=chat_id,
                 text=message,
-                parse_mode="Markdown",
+                parse_mode="HTML",
                 disable_web_page_preview=True,
             )
         log.info("telegram_error_notification_sent", error_type=error_type)
