@@ -20,7 +20,7 @@ def _clean(text: str) -> str:
 
 def _build_message(track_result: dict) -> str:
     """Build daily notification for a single track using HTML."""
-    msg = "🎵 <b>Arcadia Soundscapes - Daily Track</b>\n\n"
+    msg = "🎵 <b>Arcadia Music - Daily Track</b>\n\n"
 
     msg += f"<b>Nicho:</b> {_clean(track_result.get('niche', 'N/A'))}\n"
     msg += f"<b>Titulo:</b> {_clean(track_result.get('title', 'N/A'))}\n"
@@ -46,7 +46,7 @@ def _build_message(track_result: dict) -> str:
 
 def _build_batch_message(track_results: list) -> str:
     """Build notification for multiple tracks (used for pending retries)."""
-    msg = "🎵 <b>Arcadia Soundscapes - Reporte Diario</b>\n\n"
+    msg = "🎵 <b>Arcadia Music - Reporte Diario</b>\n\n"
     msg += f"📦 <b>Tracks publicados:</b> {len(track_results)}\n\n"
     for i, track in enumerate(track_results, 1):
         msg += f"<b>{i}.</b> {_clean(track.get('title', 'N/A'))}\n"
@@ -99,7 +99,7 @@ async def notify_error(error_type: str, details: str):
 
         details_clean = _clean(details)
         message = (
-            f"⚠️ <b>Arcadia Soundscapes - Error</b>\n\n"
+            f"⚠️ <b>Arcadia Music - Error</b>\n\n"
             f"<b>Tipo:</b> {_clean(error_type)}\n"
             f"<b>Detalle:</b> {details_clean[:500]}\n"
         )

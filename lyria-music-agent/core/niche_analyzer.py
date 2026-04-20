@@ -1,5 +1,5 @@
 """
-Niche analyzer for Arcadia Soundscapes.
+Niche analyzer for Arcadia Music.
 Generates a weekly pool of 7 niches (4 Spotify trends + 3 evergreen SEED_NICHES)
 and serves one niche per day via get_daily_niche().
 """
@@ -142,13 +142,13 @@ def analyze_niche_and_create_prompt(niche: str, patterns: dict = None) -> dict:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     params = NICHE_PARAMS.get(niche, NICHE_PARAMS.get(SEED_NICHES[0]))
     default_meta = {
-        "yt_title": f"{niche.title()} - Royalty Free Music",
-        "pond5_title": f"{niche.title()} Background Music",
-        "pond5_keywords": "music, loop, background, " + niche.replace(" ", ", "),
-        "yt_description": f"Best {niche} music. Free to use.",
-        "yt_tags": "royalty free music, " + niche.replace(" ", ", "),
-        "bpm": params.get("bpm", 100),
-        "mood": params.get("mood", "neutral").split(",")[0].strip(),
+        "yt_title": f"{niche.title()} | Arcadia Music",
+        "pond5_title": f"{niche.title()} - Electronic Music",
+        "pond5_keywords": "melodic techno, electronic music, dark techno, " + niche.replace(" ", ", "),
+        "yt_description": f"{niche.title()} by Arcadia Music. Immersive electronic soundscapes.",
+        "yt_tags": "melodic techno, electronic music, dark techno, " + niche.replace(" ", ", "),
+        "bpm": params.get("bpm", 126),
+        "mood": params.get("mood", "dark, driving").split(",")[0].strip(),
     }
 
     if not api_key:
@@ -169,10 +169,14 @@ Contexto de analisis de competencia (usar para mejorar SEO):
 """
 
     sys_instruction = (
-        "Eres un experto en metadata musical SEO para YouTube y Pond5. "
+        "Eres un experto en metadata musical SEO para YouTube y Pond5 especializado en Melodic Techno y electronica. "
         "Devuelve UNICAMENTE un objeto JSON sin explicacion. "
         "Keys: yt_title, pond5_title, pond5_keywords (string de palabras separadas por comas), "
-        "yt_description, yt_tags (string de tags separados por comas), bpm (int), mood (string)."
+        "yt_description, yt_tags (string de tags separados por comas), bpm (int), mood (string). "
+        "IMPORTANTE: Los titulos deben ser EVOCADORES y MEMORABLES, estilo cyberpunk/dark/futurista. "
+        "Ejemplos de buenos titulos: 'Bad Angels Dance', 'Voltage In The Veins', 'Midnight Meridian', "
+        "'Silence In The Marrow', 'Neon Pulse Protocol'. NO uses titulos genericos como 'Melodic Techno Track'. "
+        "Usa nombres que suenen como tracks reales de Afterlife Records o Drumcode."
     )
 
     prompt = f"""
@@ -180,7 +184,8 @@ Nicho: '{niche}'
 Estilo: {params.get('mood')} a {params.get('bpm')} BPM.
 {patterns_context}
 Genera la mejor metadata para publicar en YouTube y Pond5.
-El canal se llama "Arcadia Soundscapes" -- musica generada por IA, paisajes sonoros inmersivos.
+El canal se llama "Arcadia Music" -- musica electronica oscura, cyberpunk, melodic techno.
+El estilo visual es futurista, neon, oscuro. Los titulos deben ser evocadores e intensos.
 """
 
     try:

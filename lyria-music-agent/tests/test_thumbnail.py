@@ -1,5 +1,5 @@
 """
-Visual verification test for Arcadia Soundscapes thumbnails.
+Visual verification test for Arcadia Music thumbnails.
 Generates thumbnails for each mood and saves to output/video/test_thumbs/.
 Run and visually inspect the results.
 """
@@ -13,12 +13,14 @@ TEST_DIR = "output/video/test_thumbs"
 os.makedirs(TEST_DIR, exist_ok=True)
 
 TEST_CASES = [
-    ("Peaceful Ambient Meditation Music for Deep Relaxation and Sleep", "calm"),
-    ("EPIC Cinematic Orchestral Battle Theme | Powerful Dramatic Music", "epic"),
-    ("Lofi Hip Hop Beats to Study and Relax | Chill Vibes", "relaxing"),
-    ("Dark Trap Instrumental 140 BPM | Hard Aggressive Beat", "dark"),
-    ("Cozy Acoustic Coffee Shop Music | Warm Morning Vibes", "cozy"),
-    ("Energetic Electronic Dance Music | Happy Upbeat EDM", "energetic"),
+    ("Neon Pulse Protocol | Melodic Techno", "hypnotic"),
+    ("Shattered Horizon | Dark Melodic Techno", "dark"),
+    ("Voltage In The Veins | Peak Time Techno", "aggressive"),
+    ("Ghost Frequency | Industrial Techno", "dystopian"),
+    ("Eclipse Protocol | Progressive Techno", "emotional"),
+    ("Bad Angels Dance | Cyberpunk Electronic", "futuristic"),
+    ("Acid Nerve | Acid Techno", "psychedelic"),
+    ("Desert Mirage | Organic House", "warm"),
     ("Short Title", "neutral"),
 ]
 

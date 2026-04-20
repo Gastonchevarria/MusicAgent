@@ -3,21 +3,38 @@ import random
 import subprocess
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-# --- Arcadia Soundscapes color palette (cosmic theme) ---
+# --- Arcadia Music color palette (dark electronic / cyberpunk) ---
 
 ARCADIA_MOODS = {
-    "calm":      {"primary": (10, 14, 39),  "secondary": (26, 58, 92),  "accent": (0, 204, 255)},
-    "peaceful":  {"primary": (10, 14, 39),  "secondary": (26, 58, 92),  "accent": (0, 204, 255)},
-    "relaxing":  {"primary": (10, 14, 39),  "secondary": (26, 58, 92),  "accent": (0, 204, 255)},
-    "epic":      {"primary": (26, 10, 46),  "secondary": (46, 10, 26),  "accent": (136, 0, 255)},
-    "dramatic":  {"primary": (26, 10, 46),  "secondary": (46, 10, 26),  "accent": (136, 0, 255)},
-    "powerful":  {"primary": (26, 10, 46),  "secondary": (46, 10, 26),  "accent": (136, 0, 255)},
-    "energetic": {"primary": (10, 26, 62),  "secondary": (10, 62, 62),  "accent": (0, 255, 200)},
-    "happy":     {"primary": (10, 26, 62),  "secondary": (10, 62, 62),  "accent": (0, 255, 200)},
-    "dark":      {"primary": (5, 5, 16),    "secondary": (26, 10, 46),  "accent": (136, 0, 255)},
-    "aggressive":{"primary": (5, 5, 16),    "secondary": (26, 10, 46),  "accent": (136, 0, 255)},
-    "cozy":      {"primary": (13, 27, 42),  "secondary": (42, 26, 13),  "accent": (255, 170, 50)},
-    "warm":      {"primary": (13, 27, 42),  "secondary": (42, 26, 13),  "accent": (255, 170, 50)},
+    # Dark & Aggressive (Industrial, Peak Time, Cyberpunk)
+    "dark":        {"primary": (3, 3, 12),    "secondary": (20, 5, 40),   "accent": (180, 0, 255)},
+    "aggressive":  {"primary": (5, 2, 10),    "secondary": (40, 5, 15),   "accent": (255, 0, 80)},
+    "intense":     {"primary": (5, 2, 10),    "secondary": (40, 5, 15),   "accent": (255, 0, 80)},
+    "dystopian":   {"primary": (3, 3, 8),     "secondary": (15, 15, 30),  "accent": (0, 255, 140)},
+    "mechanical":  {"primary": (3, 3, 8),     "secondary": (15, 15, 30),  "accent": (0, 255, 140)},
+    # Hypnotic & Deep (Melodic Techno, Deep Techno)
+    "hypnotic":    {"primary": (5, 5, 18),    "secondary": (15, 8, 40),   "accent": (0, 180, 255)},
+    "mesmerizing": {"primary": (5, 5, 18),    "secondary": (15, 8, 40),   "accent": (0, 180, 255)},
+    "deep":        {"primary": (5, 5, 18),    "secondary": (15, 8, 40),   "accent": (0, 180, 255)},
+    "introspective":{"primary": (5, 5, 18),   "secondary": (15, 8, 40),   "accent": (0, 180, 255)},
+    # Emotional & Euphoric (Progressive, Melodic House, Trance)
+    "emotional":   {"primary": (8, 5, 22),    "secondary": (25, 10, 50),  "accent": (140, 80, 255)},
+    "euphoric":    {"primary": (8, 5, 22),    "secondary": (25, 10, 50),  "accent": (140, 80, 255)},
+    "uplifting":   {"primary": (8, 5, 22),    "secondary": (25, 10, 50),  "accent": (140, 80, 255)},
+    "cinematic":   {"primary": (8, 5, 22),    "secondary": (25, 10, 50),  "accent": (140, 80, 255)},
+    "dreamy":      {"primary": (8, 5, 22),    "secondary": (25, 10, 50),  "accent": (140, 80, 255)},
+    # Futuristic & Neon (Cyberpunk, Acid)
+    "futuristic":  {"primary": (3, 3, 12),    "secondary": (10, 20, 35),  "accent": (0, 255, 200)},
+    "psychedelic": {"primary": (8, 3, 15),    "secondary": (25, 10, 40),  "accent": (255, 100, 0)},
+    "quirky":      {"primary": (5, 5, 15),    "secondary": (20, 10, 35),  "accent": (0, 255, 180)},
+    # Warm & Organic (Organic House)
+    "warm":        {"primary": (10, 8, 5),    "secondary": (30, 18, 8),   "accent": (255, 160, 40)},
+    "groovy":      {"primary": (10, 8, 5),    "secondary": (30, 18, 8),   "accent": (255, 160, 40)},
+    "sensual":     {"primary": (10, 8, 5),    "secondary": (30, 18, 8),   "accent": (255, 160, 40)},
+    # Powerful & Explosive (Peak Time)
+    "powerful":    {"primary": (5, 2, 10),    "secondary": (30, 5, 20),   "accent": (255, 0, 120)},
+    "relentless":  {"primary": (5, 2, 10),    "secondary": (30, 5, 20),   "accent": (255, 0, 120)},
+    "explosive":   {"primary": (5, 2, 10),    "secondary": (30, 5, 20),   "accent": (255, 0, 120)},
 }
 
 
@@ -27,7 +44,7 @@ def get_arcadia_colors(mood: str) -> dict:
     for key, colors in ARCADIA_MOODS.items():
         if key in mood_lower:
             return colors
-    return {"primary": (10, 14, 39), "secondary": (26, 58, 92), "accent": (0, 204, 255)}
+    return {"primary": (5, 5, 18), "secondary": (15, 8, 40), "accent": (0, 180, 255)}
 
 
 def _get_font(size: int):
@@ -142,13 +159,13 @@ def _draw_glow_border(img, accent: tuple, width_px: int = 3):
 
 def create_thumbnail(title: str, mood: str, output_path: str):
     """
-    Generate 1280x720 Arcadia Soundscapes branded thumbnail.
+    Generate 1280x720 Arcadia Music branded thumbnail.
 
-    - Radial gradient background in cosmic tones
+    - Radial gradient background in dark electronic tones
     - Star particle overlay
     - Auto-sized, word-wrapped title with text shadow
-    - "Arcadia Soundscapes" branding at bottom
-    - Subtle glow border
+    - "Arcadia Music" branding at bottom
+    - Subtle neon glow border
     """
     width, height = 1280, 720
     colors = get_arcadia_colors(mood)
@@ -193,7 +210,7 @@ def create_thumbnail(title: str, mood: str, output_path: str):
 
     # 5. Branding -- bottom center
     brand_font = _get_font(22)
-    brand_text = "Arcadia Soundscapes"
+    brand_text = "Arcadia Music"
     brand_bbox = brand_font.getbbox(brand_text)
     brand_x = (width - brand_bbox[2]) // 2
     brand_y = height - 55
@@ -211,9 +228,9 @@ def create_thumbnail(title: str, mood: str, output_path: str):
 
 def create_video_with_visualizer(mp3_path: str, thumb_path: str, output_path: str):
     """
-    Create 1280x720 video with spectrum analyzer and Arcadia branding.
-    - Thumbnail background with showfreqs spectrum bars (cyan/purple)
-    - 'Arcadia Soundscapes' drawtext watermark
+    Create 1280x720 video with spectrum analyzer and Arcadia Music branding.
+    - Thumbnail background with showfreqs spectrum bars (neon cyan/purple)
+    - 'Arcadia Music' drawtext watermark
     """
     dirname = os.path.dirname(output_path)
     if dirname:
@@ -229,7 +246,7 @@ def create_video_with_visualizer(mp3_path: str, thumb_path: str, output_path: st
         "[a_stereo]showfreqs=mode=bar:s=1280x180:fscale=log:"
         "ascale=log:colors=0x00ccff|0x8800ff:win_size=2048[freq];"
         "[0:v][freq]overlay=0:540[with_freq];"
-        f"[with_freq]drawtext=text='Arcadia Soundscapes':"
+        f"[with_freq]drawtext=text='Arcadia Music':"
         f"fontfile={font_path}:fontsize=22:"
         f"fontcolor=white@0.35:x=w-tw-20:y=h-th-15[outv]"
     )
@@ -256,7 +273,7 @@ def create_video_with_visualizer(mp3_path: str, thumb_path: str, output_path: st
             "[a_stereo]showwaves=s=1280x180:mode=cline:"
             "colors=0x00ccff@0.7:rate=30[waves];"
             "[0:v][waves]overlay=0:540[with_waves];"
-            f"[with_waves]drawtext=text='Arcadia Soundscapes':"
+            f"[with_waves]drawtext=text='Arcadia Music':"
             f"fontfile={font_path}:fontsize=22:"
             f"fontcolor=white@0.35:x=w-tw-20:y=h-th-15[outv]"
         )
@@ -279,7 +296,7 @@ def create_youtube_short(audio_path: str, thumbnail_path: str, output_path: str)
     """
     Generate vertical 1080x1920 YouTube Short.
     - Thumbnail in upper half, spectrum visualizer in lower half
-    - Arcadia Soundscapes branding at bottom
+    - Arcadia Music branding at bottom
     - Max 59 seconds
     """
     dirname = os.path.dirname(output_path)
@@ -297,7 +314,7 @@ def create_youtube_short(audio_path: str, thumbnail_path: str, output_path: str)
         "[a_stereo]showfreqs=mode=bar:s=1080x400:fscale=log:"
         "ascale=log:colors=0x00ccff|0x8800ff:win_size=2048[freq];"
         "[bg][freq]overlay=0:1200[with_freq];"
-        f"[with_freq]drawtext=text='Arcadia Soundscapes':"
+        f"[with_freq]drawtext=text='Arcadia Music':"
         f"fontfile={font_path}:fontsize=28:"
         f"fontcolor=white@0.4:x=(w-tw)/2:y=h-60[outv]"
     )
@@ -327,7 +344,7 @@ def create_youtube_short(audio_path: str, thumbnail_path: str, output_path: str)
             "[a_stereo]showwaves=s=1080x400:mode=cline:"
             "colors=0x00ccff@0.7:rate=30[waves];"
             "[bg][waves]overlay=0:1200[with_waves];"
-            f"[with_waves]drawtext=text='Arcadia Soundscapes':"
+            f"[with_waves]drawtext=text='Arcadia Music':"
             f"fontfile={font_path}:fontsize=28:"
             f"fontcolor=white@0.4:x=(w-tw)/2:y=h-60[outv]"
         )

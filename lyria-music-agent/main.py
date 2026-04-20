@@ -1,5 +1,5 @@
 """
-Arcadia Soundscapes — Daily Drip v2
+Arcadia Music — Daily Drip v2
 
 Generates and publishes 1 track per day to YouTube + Pond5.
 - Daily at 09:00 ART
